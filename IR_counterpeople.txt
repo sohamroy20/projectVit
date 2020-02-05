@@ -1,0 +1,49 @@
+int IR1_out = HIGH; /* Avoiding initial false detections.    */
+int IR2_out = HIGH; /* Avoiding initial false detections.    */
+int counter = 0;
+int i = 
+
+void setDisplayValue(int n) {
+  for(i = 0; i < NUMB_OF_SEGMENTS; i++){
+    digitalWrite(DISP_PIN_0 + i, displaySEG[n % 10][i]);
+  }
+}
+#define initDisplay() setDisplayValue(0)
+
+void increaseAndDisplay() {
+  counter++;
+  if(counter > MAX_NUMB) {
+    counter = 1;
+  }
+  setDisplayValue(counter);
+}
+
+void decreaseAndDisplay() {
+  if(counter) {
+    counter--;
+    setDisplayValue(counter);
+  }
+}
+void setup() {
+  Serial.begin (9600);
+  pinMode(IR1, INPUT);
+  pinMode(IR2, INPUT);
+  /* Setting Display related PIN as OUTPUT */
+  for(i = 0; i < NUMB_OF_SEGMENTS; i++){
+    pinMode(DISP_PIN_0 + i, OUTPUT);
+  } 
+  initDisplay();
+}
+void loop() {
+  IR1_out = digitalRead(IR1);
+  IR2_out = digitalRead(IR2);
+  if(IR1_out == LOW) {
+    increaseAndDisplay();
+    delay(500);
+  }
+  if(IR2_out == LOW) {
+    decreaseAndDisplay();
+    delay(500);
+  } 
+  delay(100);
+}
